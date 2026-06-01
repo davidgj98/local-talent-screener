@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.venv/
+venv/
+.virtualenv/
+
+# Project data
+data/offers/
+uploads/*
+!uploads/.gitkeep
+
+# IDE / editor
+.claude/
+.aider*
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies (frontend es standalone HTML, no necesita build)
+node_modules/
+package.json
+package-lock.json
+
+# Environment
+.env
+
+# Generated / test files
+test_cvs/
+sample_cv.pdf
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Backups / misc
+*.zip
+local-talent-screener-fixed/
+frontend-analysis.txt
+Imagen pegada.png
