@@ -78,6 +78,24 @@ python --version  # must be >= 3.10
 
 ---
 
+## Docker (recommended)
+
+```bash
+# Clone and run
+git clone <your-repo>
+cd local-hr-agent-squad
+docker compose up -d
+
+# Pull the models (the UI will show errors until models are ready)
+docker exec -it ollama ollama pull qwen2.5:3b
+docker exec -it ollama ollama pull phi4-mini
+docker exec -it ollama ollama pull qwen2.5-coder:7b-instruct-q4_K_M
+
+# Open http://localhost:8000
+```
+
+---
+
 ## Installation
 
 ```bash
@@ -96,8 +114,8 @@ pip install -r requirements.txt
 ### Start the server
 
 ```bash
-python main.py
-# or: uvicorn main:app --host 0.0.0.0 --port 8000
+RELOAD=true python main.py          # development with auto-reload
+# or: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Server at `http://localhost:8000`.

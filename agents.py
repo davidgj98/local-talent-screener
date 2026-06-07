@@ -106,7 +106,7 @@ class BaseAgent:
 
 class TheProfiler(BaseAgent):
     name = "TheProfiler"
-    model = "qwen2.5:3b"
+    model = os.getenv("OLLAMA_MODEL", "qwen2.5:3b")
     system_prompt = """You are The Profiler, an agent specialized in CV analysis.
 
 YOUR TASKS:
@@ -193,11 +193,10 @@ OUTPUT FORMAT — return ONLY this JSON (no extra text):
 class TheInterviewer(BaseAgent):
     """
     Generates 3 technical questions to validate detected gaps.
-    Model: qwen2.5-coder:7b-instruct-q4_K_M (specialized in code and architectures)
     """
 
     name = "TheInterviewer"
-    model = "qwen2.5-coder:7b-instruct-q4_K_M"
+    model = os.getenv("OLLAMA_INTERVIEWER_MODEL", "qwen2.5-coder:7b-instruct-q4_K_M")
     system_prompt = """You are The Interviewer, an expert in designing technical validation questions for interviews.
 
 YOUR TASKS:
