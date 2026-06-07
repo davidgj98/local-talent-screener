@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Agent Squad — Technical Screening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --surface-hover: #f1f5f9;
+  --border: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --text: #0f172a;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-light: #eef2ff;
+  --success: #10b981;
+  --success-light: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-light: #fffbeb;
+  --danger: #ef4444;
+  --danger-light: #fef2f2;
+  --accent: #2563eb;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --font: 'Inter', -apple-system, system-ui, sans-serif;
+  --mono: 'SF Mono', ui-monospace, 'Cascadia Code', monospace;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+.container{max-width:1000px;margin:0 auto;padding:0 24px;flex:1;width:100%}
+
+/* Header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:50}
+.header-start{display:flex;align-items:center;gap:10px}
+.header-logo{width:30px;height:30px;background:var(--primary);border-radius:var(--radius-sm);display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px}
+.header-title{font-size:16px;font-weight:600;color:var(--text)}
+.header-sub{font-size:12px;color:var(--text-tertiary);font-weight:400;margin-left:8px;padding-left:8px;border-left:1px solid var(--border)}
+.status-pill{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-secondary);padding:6px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surface)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--success)}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;padding:4px;background:var(--surface);border-radius:var(--radius);width:fit-content;margin:24px 0;border:1px solid var(--border)}
+.tab-btn{padding:7px 16px;font-size:13px;font-weight:500;border:none;border-radius:var(--radius-sm);background:transparent;color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.tab-btn:hover{color:var(--text);background:var(--surface-hover)}
+.tab-btn.active{background:var(--bg);color:var(--text);box-shadow:var(--shadow-sm)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Section */
+.section{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px}
+.section-header{padding:16px 20px;border-bottom:1px solid var(--border)}
+.section-header:last-child{border-bottom:none}
+.section-title{font-size:11px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em}
+.section-body{padding:20px}
+
+/* Grid forms */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-label{font-size:12px;font-weight:600;color:var(--text-secondary)}
+.input,.textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s}
+.input{padding:9px 12px;line-height:1.4}
+.textarea{padding:10px 12px;resize:vertical;min-height:140px;line-height:1.6}
+.input:focus,.textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,0.1)}
+.input::placeholder,.textarea::placeholder{color:var(--text-tertiary)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;font-size:13px;font-weight:500;border-radius:var(--radius-sm);border:1px solid transparent;cursor:pointer;transition:all .15s;font-family:var(--font);white-space:nowrap;line-height:1.4}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover:not(:disabled){background:var(--primary-hover);border-color:var(--primary-hover)}
+.btn-secondary{background:var(--bg);color:var(--text);border-color:var(--border)}
+.btn-secondary:hover:not(:disabled){background:var(--surface-hover);border-color:var(--border-hover)}
+.btn-ghost{background:transparent;color:var(--text-secondary);border-color:transparent}
+.btn-ghost:hover:not(:disabled){background:var(--surface-hover);color:var(--text)}
+.btn-accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-accent:hover:not(:disabled){background:#1d4ed8;border-color:#1d4ed8}
+.btn-success{background:var(--success);color:#fff;border-color:var(--success)}
+.btn-success:hover:not(:disabled){background:#059669;border-color:#059669}
+.btn-danger{background:transparent;color:var(--danger);border-color:var(--danger)}
+.btn-danger:hover:not(:disabled){background:var(--danger-light)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-icon{font-size:16px;line-height:1}
+
+/* Drop zone */
+.drop-zone{position:relative;border:1px dashed var(--border);border-radius:var(--radius);padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--bg)}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--primary);background:var(--primary-light)}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop-zone-icon{font-size:32px;margin-bottom:8px;display:block}
+.drop-zone-title{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--text)}
+.drop-zone-hint{font-size:12px;color:var(--text-tertiary)}
+.drop-zone.has-file{border-color:var(--success);background:var(--success-light)}
+.file-name{margin-top:8px;font-size:12px;color:var(--success);font-weight:500}
+
+/* Action row */
+.action-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;flex-wrap:wrap}
+
+/* Progress */
+.progress{height:3px;background:var(--surface);border-radius:2px;overflow:hidden}
+.progress-bar{height:100%;background:var(--primary);width:0%;transition:width .4s ease}
+.progress-bar.indeterminate{width:30%;animation:indeterminate 1.5s ease-in-out infinite}
+@keyframes indeterminate{0%{transform:translateX(-100%)}100%{transform:translateX(400%)}}
+
+/* Agent cards */
+.agent-card{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;overflow:hidden;transition:border-color .2s}
+.agent-card-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;user-select:none;transition:background .15s;background:var(--surface)}
+.agent-card-header:hover{background:var(--surface-hover)}
+.agent-card.active{border-color:var(--primary)}
+.agent-card.done-1{border-color:var(--success)}
+.agent-card.done-2{border-color:var(--warning)}
+.agent-card.done-3{border-color:var(--primary)}
+.agent-num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:11px;font-weight:700;flex-shrink:0;background:var(--primary-light);color:var(--primary)}
+.agent-card.done-1 .agent-num{background:var(--success-light);color:var(--success)}
+.agent-card.done-2 .agent-num{background:var(--warning-light);color:var(--warning)}
+.agent-card.done-3 .agent-num{background:var(--primary-light);color:var(--primary)}
+.agent-meta{flex:1;min-width:0}
+.agent-name{font-size:14px;font-weight:600;color:var(--text)}
+.agent-model{font-size:11px;color:var(--text-tertiary);font-weight:500}
+.agent-status-tag{font-size:11px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);color:var(--text-tertiary);font-weight:500;white-space:nowrap}
+.agent-status-tag.running{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
+.agent-status-tag.done{border-color:var(--success);color:var(--success);background:var(--success-light)}
+.agent-status-tag.error{border-color:var(--danger);color:var(--danger);background:var(--danger-light)}
+.chevron{font-size:10px;color:var(--text-tertiary);transition:transform .2s}
+.agent-card.collapsed .chevron{transform:rotate(-90deg)}
+.agent-card.collapsed .agent-body{display:none}
+.agent-body{padding:20px}
+
+/* Result grid */
+.result-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;align-items:start}
+.result-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px}
+.result-block h4{font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px}
+.tag-list{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:11px;padding:3px 8px;border-radius:4px;font-weight:500;background:var(--primary-light);color:var(--primary);border:1px solid rgba(99,102,241,0.15)}
+.score-wrap{text-align:center}
+.score-ring{position:relative;width:90px;height:90px;margin:0 auto 10px}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-ring circle{fill:none;stroke-width:7}
+.score-ring .track{stroke:var(--border)}
+.score-ring .fill{stroke:var(--primary);stroke-linecap:round;transition:stroke-dashoffset .8s ease}
+.score-number{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:18px;font-weight:700;color:var(--text)}
+.score-label{font-size:11px;color:var(--text-tertiary);font-weight:500}
+.conclusion-text{font-size:13px;line-height:1.6;color:var(--text);font-style:italic;border-left:3px solid var(--primary);padding:12px 14px;background:var(--surface);border-radius:var(--radius-sm)}
+.years-value{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--primary);line-height:1}
+.years-label{font-size:11px;color:var(--text-tertiary);margin-top:2px}
+.result-list{list-style:none}
+.result-list li{display:flex;align-items:flex-start;gap:6px;font-size:12px;line-height:1.5;padding:3px 0}
+.result-list li+li{border-top:1px solid var(--border)}
+.result-list li::before{flex-shrink:0;margin-top:2px;font-size:9px}
+.list-good li::before{content:'\2713';color:var(--success);font-weight:700}
+.list-bad li::before{content:'\2717';color:var(--danger)}
+
+/* Questions */
+.question-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;margin-bottom:12px}
+.q-num{position:absolute;top:-9px;left:12px;background:var(--primary);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px;font-family:var(--mono)}
+.q-text{font-size:14px;font-weight:600;margin-bottom:10px;line-height:1.5;color:var(--text)}
+.q-sub{font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.q-just{font-size:12px;color:var(--text-secondary);margin-bottom:10px;line-height:1.5}
+.q-answer{font-family:var(--mono);font-size:11px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;line-height:1.6;color:var(--text)}
+
+/* Error */
+.error-box{display:none;margin-top:16px;padding:12px 16px;background:var(--danger-light);border:1px solid #fecaca;border-radius:var(--radius);font-size:12px;color:var(--danger)}
+.error-box strong{display:block;margin-bottom:2px;font-size:10px;letter-spacing:.04em;text-transform:uppercase}
+
+/* Offer cards */
+.offer-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:8px;cursor:pointer;transition:border-color .15s,box-shadow .15s;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.offer-card:hover{border-color:var(--primary);box-shadow:var(--shadow-sm)}
+.offer-card-info{flex:1;min-width:0}
+.offer-card-info h3{font-size:14px;font-weight:600;margin-bottom:3px;color:var(--text)}
+.offer-card-info p{font-size:12px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.offer-card-meta{display:flex;gap:12px;align-items:center;flex-shrink:0}
+.status-badge{font-size:11px;padding:3px 10px;border-radius:10px;font-weight:500;white-space:nowrap}
+.status-badge.abierta{background:var(--warning-light);color:#92400e;border:1px solid #fde68a}
+.status-badge.procesando{background:var(--primary-light);color:var(--primary);border:1px solid rgba(99,102,241,0.2)}
+.status-badge.cerrada{background:var(--success-light);color:#065f46;border:1px solid #a7f3d0}
+.view-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.view-header h2{font-size:18px;font-weight:700;color:var(--text)}
+.back-link{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--text-secondary);cursor:pointer;font-weight:500;margin-bottom:16px;transition:color .15s}
+.back-link:hover{color:var(--text)}
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.detail-header-text{flex:1;min-width:0}
+.detail-header-text h2{font-size:18px;font-weight:700;margin-bottom:4px;color:var(--text)}
+.detail-header-text p{font-size:13px;color:var(--text-secondary);line-height:1.6;padding-right:8px;max-height:300px;overflow-y:auto}
+.detail-header-text p::-webkit-scrollbar{width:6px}
+.detail-header-text p::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:4px}
+.detail-header-text p::-webkit-scrollbar-track{background:transparent}
+.detail-header-actions{display:flex;gap:8px;flex-shrink:0}
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-tertiary)}
+.empty-state .empty-icon{font-size:40px;margin-bottom:10px;display:block}
+.empty-state p{font-size:14px}
+
+/* Batch upload */
+.batch-file-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.batch-file-tag{font-size:11px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px 8px;display:inline-flex;align-items:center;gap:4px}
+
+/* Ranking table */
+.ranking-wrap{overflow-x:auto}
+.ranking-table{width:100%;border-collapse:collapse;font-size:12px}
+.ranking-table th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--border);font-weight:600;color:var(--text-tertiary);font-size:10px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.ranking-table td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+.ranking-table tr:hover td{background:var(--surface)}
+.rank-num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--primary)}
+.score-cell{font-family:var(--mono);font-size:13px;font-weight:600}
+.score-cell.high{color:var(--success)}
+.score-cell.mid{color:var(--warning)}
+.score-cell.low{color:var(--danger)}
+.cv-status-tag{font-size:11px;padding:2px 6px;border-radius:4px;font-weight:500}
+.cv-status-tag.complete{color:var(--success);background:var(--success-light)}
+.cv-status-tag.error{color:var(--danger);background:var(--danger-light)}
+.cv-status-tag.pending{color:var(--text-tertiary);background:var(--surface)}
+tr.discarded td{opacity:.35;text-decoration:line-through}
+.rank-detail > td{padding:0!important;background:var(--surface);white-space:normal}
+.rank-detail .agent-detail-content{padding:16px 20px;border-top:1px solid var(--border)}
+.rank-detail .agent-card{margin-bottom:12px}
+.rank-detail .agent-card:last-child{margin-bottom:0}
+.expand-btn{font-size:10px;transition:transform .2s;cursor:pointer}
+.expand-btn.expanded{transform:rotate(90deg)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.35);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.modal-overlay.active{display:flex}
+.modal-box{background:var(--bg);border-radius:var(--radius-lg);padding:24px;max-width:400px;width:90%;box-shadow:var(--shadow-lg)}
+.modal-box h3{font-size:16px;font-weight:700;margin-bottom:16px}
+.modal-field{margin-bottom:10px}
+.modal-field:last-of-type{margin-bottom:0}
+.modal-field label{display:block;font-size:10px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.modal-field .modal-value{font-size:14px;color:var(--text);font-weight:500;padding:8px 10px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.modal-actions{margin-top:16px;display:flex;justify-content:flex-end}
+
+.cv-error{display:block;font-size:10px;color:var(--danger);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Footer */
+.footer{border-top:1px solid var(--border);padding:20px 24px;text-align:center;font-size:11px;color:var(--text-tertiary);background:var(--surface);margin-top:40px}
+
+/* Utilities */
+.hidden{display:none!important}
+.fade-up{animation:fadeUp .35s ease forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;animation:spin .7s linear infinite}
+.mb-8{margin-bottom:8px}
+.mb-12{margin-bottom:12px}
+.mb-16{margin-bottom:16px}
+.mt-16{margin-top:16px}
+.gap-8{gap:8px}
+.flex{display:flex}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.text-sm{font-size:12px;color:var(--text-tertiary)}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-start">
+    <div class="header-logo">HR</div>
+    <span class="header-title">Agent Squad</span>
+    <span class="header-sub">technical screening</span>
+  </div>
+  <div class="status-pill">
+    <span class="status-dot" id="status-dot"></span>
+    <span id="api-status">Checking…</span>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- Tabs -->
+  <nav class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="offers" role="tab">Offers</button>
+    <button class="tab-btn" data-tab="individual" role="tab">Individual</button>
+  </nav>
+
+  <!-- ============ TAB: INDIVIDUAL ============ -->
+  <section class="tab-panel" id="tab-individual" role="tabpanel">
+
+    <div class="section">
+      <div class="section-header"><span class="section-title">Pipeline Input</span></div>
+      <div class="section-body">
+        <div class="form-grid">
+          <div>
+            <div class="drop-zone" id="drop-zone">
+              <input type="file" id="cv-file" accept=".pdf">
+              <span class="drop-zone-icon">📄</span>
+              <div class="drop-zone-title">Candidate CV</div>
+              <div class="drop-zone-hint">Drag & drop PDF here or click to select</div>
+              <div class="file-name" id="file-name"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="job-offer">Job Description</label>
+            <textarea class="textarea" id="job-offer" placeholder="Paste the technical requirements and job description here…"></textarea>
+          </div>
+        </div>
+        <div class="action-row">
+          <span class="text-sm">🔒 All processing is local. No data leaves your machine.</span>
+          <button class="btn btn-primary" id="analyze-btn" disabled>
+            <span class="btn-icon">⚡</span>
+            Run Pipeline
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-box" id="error-box">
+      <strong>Pipeline Error</strong>
+      <span id="error-text"></span>
+    </div>
+
+    <div id="pipeline" style="display:none">
+      <div class="flex items-center justify-between mb-16">
+        <h2 style="font-size:18px;font-weight:700">Screening Report</h2>
+      </div>
+      <div class="progress mb-16"><div class="progress-bar" id="progress-bar"></div></div>
+
+      <!-- Agent 1 -->
+      <div class="agent-card a1 collapsed" id="card-1">
+        <div class="agent-card-header" onclick="toggleCard(1)">
+          <div class="agent-num">01</div>
+          <div class="agent-meta">
+            <div class="agent-name">The Profiler</div>
+            <div class="agent-model">qwen2.5:3b — Anonymous Extractor</div>
+          </div>
+          <div class="agent-status-tag" id="status-1">Waiting</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="agent-body" id="body-1">
+          <div class="result-grid">
+            <div class="result-block">
+              <h4>Experience</h4>
+              <div class="years-value" id="p-years">--</div>
+              <div class="years-label">estimated years</div>
+            </div>
+            <div class="result-block">
+              <h4>Technologies</h4>
+              <div class="tag-list" id="p-techs"></div>
+            </div>
+            <div class="result-block">
+              <h4>Anonymous Projects</h4>
+              <ul class="result-list list-good" id="p-projects"></ul>
+            </div>
+            <div class="result-block">
+              <h4>Certifications</h4>
+              <ul class="result-list list-good" id="p-certs"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 2 -->
+      <div class="agent-card a2 collapsed" id="card-2">
+        <div class="agent-card-header" onclick="toggleCard(2)">
+          <div class="agent-num">02</div>
+          <div class="agent-meta">
+            <div class="agent-name">The Tech Critic</div>
+            <div class="agent-model">phi4-mini — Technical Evaluator</div>
+          </div>
+          <div class="agent-status-tag" id="status-2">Waiting</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="agent-body" id="body-2">
+          <div class="result-grid">
+            <div class="result-block score-wrap">
+              <h4>Match Score</h4>
+              <div class="score-ring">
+                <svg viewBox="0 0 100 100">
+                  <circle class="track" cx="50" cy="50" r="42"/>
+                  <circle class="fill" id="score-fill" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"/>
+                </svg>
+                <div class="score-number" id="c-score">--</div>
+              </div>
+              <div class="score-label">candidate / offer match</div>
+            </div>
+            <div class="result-block">
+              <h4>Strengths ✓</h4>
+              <ul class="result-list list-good" id="c-strengths"></ul>
+            </div>
+            <div class="result-block">
+              <h4>Tech Gaps ✗</h4>
+              <ul class="result-list list-bad" id="c-gaps"></ul>
+            </div>
+            <div class="result-block">
+              <h4>Analysis Conclusion</h4>
+              <p class="conclusion-text" id="c-conclusion"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agent 3 -->
+      <div class="agent-card a3 collapsed" id="card-3">
+        <div class="agent-card-header" onclick="toggleCard(3)">
+          <div class="agent-num">03</div>
+          <div class="agent-meta">
+            <div class="agent-name">The Interviewer</div>
+            <div class="agent-model">qwen2.5-coder:7b — Technical Interviewer</div>
+          </div>
+          <div class="agent-status-tag" id="status-3">Waiting</div>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="agent-body" id="body-3">
+          <div id="i-questions" style="display:grid;gap:16px;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: OFERTAS (BATCH) ============ -->
+  <section class="tab-panel active" id="tab-offers" role="tabpanel">
+
+    <!-- View: Offers list -->
+    <div id="offers-list-view">
+      <div class="view-header">
+        <h2>Job Offers</h2>
+        <button class="btn btn-primary" id="new-offer-btn">+ New Offer</button>
+      </div>
+      <div id="offers-container">
+        <div class="empty-state">
+          <span class="empty-icon">📋</span>
+          <p>No offers yet. Create the first one to get started.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- View: Create offer -->
+    <div id="create-offer-view" class="hidden">
+      <div class="back-link" id="back-from-create">← Back to offers</div>
+      <div class="section">
+        <div class="section-header"><span class="section-title">New Job Offer</span></div>
+        <div class="section-body">
+          <div class="form-group mb-16">
+            <label class="form-label" for="offer-title">Offer Title</label>
+            <input class="input" type="text" id="offer-title" placeholder="e.g. Backend Python — March 2026">
+          </div>
+          <div class="form-group mb-16">
+            <label class="form-label" for="offer-desc">Job Description</label>
+            <textarea class="textarea" id="offer-desc" placeholder="Paste the technical requirements and job description here…"></textarea>
+          </div>
+          <div class="action-row">
+            <span class="text-sm">CVs will be processed one at a time to avoid overloading the machine.</span>
+            <button class="btn btn-primary" id="save-offer-btn" disabled>+ Create Offer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View: Offer detail -->
+    <div id="offer-detail-view" class="hidden">
+      <div class="back-link" id="back-to-list">← Back to offers</div>
+
+      <div class="section">
+        <div class="section-body">
+          <div class="detail-header">
+            <div class="detail-header-text">
+              <h2 id="detail-title"></h2>
+              <p id="detail-desc"></p>
+            </div>
+            <div class="detail-header-actions">
+              <span class="status-badge" id="detail-status-badge"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="upload-section">
+        <div class="section-header"><span class="section-title">Upload CVs</span></div>
+        <div class="section-body">
+          <div class="drop-zone" id="batch-drop">
+            <div style="pointer-events:none">
+              <span class="drop-zone-icon">📑</span>
+              <div class="drop-zone-title">Drag & drop PDFs here</div>
+              <div class="drop-zone-hint">or click to select multiple files</div>
+            </div>
+            <input type="file" id="batch-files" accept=".pdf" multiple>
+          </div>
+          <div class="batch-file-list" id="batch-file-list"></div>
+          <div class="action-row">
+            <span class="text-sm" id="batch-cv-count">0 CV(s) selected</span>
+            <div class="flex gap-8">
+              <button class="btn btn-primary" id="upload-cvs-btn" disabled>⬆ Upload CVs</button>
+              <span class="text-sm" style="color:var(--text-tertiary)">CVs will be processed automatically on upload.</span>
+              <button class="btn btn-danger" id="close-offer-btn" style="display:none">🔒 Close Offer</button>
+              <button class="btn btn-ghost" id="reopen-offer-btn" style="display:none">↩ Reopen Offer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span class="section-title">Ranking & Progress</span></div>
+        <div class="section-body">
+          <div class="flex items-center justify-between mb-16">
+            <span id="detail-status-text" style="font-size:14px;font-weight:600">No CVs</span>
+            <div class="flex gap-8">
+              <button class="btn btn-ghost btn-sm" id="refresh-detail-btn">⟳ Refresh</button>
+              <button class="btn btn-success btn-sm" id="export-csv-btn" disabled>⬇ Export CSV</button>
+            </div>
+          </div>
+          <div class="ranking-wrap">
+              <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th style="width:28px"></th>
+                  <th>#</th>
+                  <th>CV</th>
+                  <th>Status</th>
+                  <th>Score</th>
+                  <th>Exp.</th>
+                  <th>Location</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ranking-body">
+                <tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:32px;font-size:13px">Upload CVs to see the ranking here.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Contact Modal -->
+<div class="modal-overlay" id="contact-modal">
+  <div class="modal-box">
+    <h3>📞 Contact Info</h3>
+    <div class="modal-field">
+      <label>Phone</label>
+      <div class="modal-value" id="contact-phone">—</div>
+    </div>
+    <div class="modal-field">
+      <label>Email</label>
+      <div class="modal-value" id="contact-email">—</div>
+    </div>
+    <div class="modal-field">
+      <label>Location</label>
+      <div class="modal-value" id="contact-location">—</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary btn-sm" id="close-modal-btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">local-hr-agent-squad · 100% on-premise processing · no telemetry</footer>
+
+<script>
+const API = window.location.protocol === 'file:'
+  ? 'http://localhost:8000'
+  : window.location.origin;
+const $ = id => document.getElementById(id);
+
+// ---- Helpers ----
+function isPdfFile(file) {
+  if (!file) return false;
+  const name = (file.name || '').toLowerCase();
+  return file.type === 'application/pdf' || name.endsWith('.pdf');
+}
+
+function parseApiError(body, fallback) {
+  if (!body || typeof body !== 'object') return fallback;
+  if (typeof body.detail === 'string') return body.detail;
+  if (body.detail && typeof body.detail === 'object' && !Array.isArray(body.detail)) {
+    return parseApiError(body.detail, fallback);
+  }
+  if (Array.isArray(body.detail)) {
+    return body.detail.map(e => e.msg || e.message || JSON.stringify(e)).join('; ');
+  }
+  const msg = body.error || body.message;
+  if (msg && body.agent) return `[${body.agent}] ${msg}`;
+  return msg || fallback;
+}
+
+function esc(s) {
+  return (s || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'})[c]);
+}
+function jsEsc(s) { return (s || '').replace(/[\\']/g, c => ({'\\':'\\\\', "'":"\\'"})[c]); }
+
+// ---- Tab switching ----
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    const isOffers = btn.dataset.tab === 'offers';
+    const tabId = isOffers ? 'tab-offers' : 'tab-individual';
+    $(tabId).classList.add('active');
+    if (!isOffers) {
+      stopPolling();
+    } else {
+      loadOffers();
+      // Resume polling if we're in a detail view with an active session
+      if (currentOfferId && !pollTimer) {
+        startPolling();
+      }
+    }
+  });
+});
+
+// ---- API check ----
+async function checkAPI() {
+  try {
+    const r = await fetch(`${API}/api/v1/health`, { signal: AbortSignal.timeout(3000) });
+    if (r.ok) {
+      $('api-status').textContent = 'API connected';
+      $('api-status').style.color = 'var(--success)';
+      $('status-dot').style.background = 'var(--success)';
+    } else throw new Error();
+  } catch {
+    $('api-status').textContent = 'API not responding';
+    $('api-status').style.color = 'var(--danger)';
+    $('status-dot').style.background = 'var(--danger)';
+  }
+}
+checkAPI();
+
+// =====================================================================
+// INDIVIDUAL
+// =====================================================================
+const dropZone = $('drop-zone');
+const fileInput = $('cv-file');
+const analyzeBtn = $('analyze-btn');
+const jobOffer = $('job-offer');
+
+function updateBtn() {
+  analyzeBtn.disabled = !(fileInput.files.length && jobOffer.value.trim().length >= 20);
+}
+
+fileInput.addEventListener('change', () => {
+  const f = fileInput.files[0];
+  if (!f) return;
+  if (!isPdfFile(f)) {
+    fileInput.value = '';
+    $('file-name').textContent = '';
+    dropZone.classList.remove('has-file');
+    showError('Only PDF files are allowed (.pdf)');
+    updateBtn();
+    return;
+  }
+  hideError();
+  $('file-name').textContent = '✓ ' + f.name;
+  dropZone.classList.add('has-file');
+  updateBtn();
+});
+jobOffer.addEventListener('input', updateBtn);
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (isPdfFile(f)) {
+    const dt = new DataTransfer(); dt.items.add(f);
+    fileInput.files = dt.files;
+    $('file-name').textContent = '✓ ' + f.name;
+    dropZone.classList.add('has-file');
+    hideError();
+    updateBtn();
+  } else {
+    showError('Only PDF files are allowed (.pdf)');
+  }
+});
+
+function toggleCard(n) { $(`card-${n}`).classList.toggle('collapsed'); }
+
+function setStatus(n, state, label) {
+  const el = $(`status-${n}`);
+  el.textContent = label;
+  el.className = 'agent-status-tag ' + state;
+}
+function setProgress(pct) { $('progress-bar').style.width = pct + '%'; }
+function openCard(n) { $(`card-${n}`).classList.remove('collapsed'); $(`card-${n}`).classList.add('active'); }
+function closeActive(n) { $(`card-${n}`).classList.remove('active'); $(`card-${n}`).classList.add(`done-${n}`); }
+function showError(msg) { $('error-box').style.display = 'block'; $('error-text').textContent = msg; }
+function hideError() { $('error-box').style.display = 'none'; }
+
+function tagList(items) { return items.map(t => `<span class="tag">${esc(t)}</span>`).join(''); }
+function bulletList(items) { return items.map(i => `<li>${esc(i)}</li>`).join(''); }
+
+function renderProfiler(p) {
+  $('p-years').textContent = p.years_experience ?? '--';
+  $('p-techs').innerHTML = p.main_technologies?.length ? tagList(p.main_technologies) : '<span style="color:var(--text-tertiary);font-size:12px">None detected</span>';
+  $('p-projects').innerHTML = p.anonymous_projects?.length ? bulletList(p.anonymous_projects) : '<li style="color:var(--text-tertiary)">No projects listed</li>';
+  $('p-certs').innerHTML = p.certifications?.length ? bulletList(p.certifications) : '<li style="color:var(--text-tertiary)">No certifications</li>';
+}
+
+function renderCritic(c) {
+  const score = c.match_score ?? 0;
+  $('c-score').textContent = score + '%';
+  const circ = 2 * Math.PI * 42;
+  $('score-fill').style.strokeDashoffset = circ - (score / 100) * circ;
+  const color = score >= 70 ? 'var(--success)' : score >= 40 ? 'var(--warning)' : 'var(--danger)';
+  $('score-fill').style.stroke = color;
+  $('c-score').style.color = color;
+  $('c-strengths').innerHTML = c.strengths?.length ? bulletList(c.strengths) : '<li style="color:var(--text-tertiary)">None</li>';
+  $('c-gaps').innerHTML = c.tech_gaps?.length ? bulletList(c.tech_gaps) : '<li style="color:var(--text-tertiary)">No tech gaps detected</li>';
+  $('c-conclusion').textContent = c.analysis_conclusion ?? '';
+}
+
+function renderInterviewer(data) {
+  const questions = data.questions ?? [];
+  $('i-questions').innerHTML = questions.map((q, i) => `
+    <div class="question-item fade-up" style="animation-delay:${i * .1}s">
+      <div class="q-num">${i + 1}</div>
+      <div class="q-text">${esc(q.question)}</div>
+      <div class="q-sub">Justification</div>
+      <div class="q-just">${esc(q.question_justification)}</div>
+      <div class="q-sub">Expected Answer</div>
+      <div class="q-answer">${esc(q.expected_correct_answer)}</div>
+    </div>
+  `).join('');
+}
+
+analyzeBtn.addEventListener('click', async () => {
+  hideError();
+  const file = fileInput.files[0];
+  const offer = jobOffer.value.trim();
+  if (!file || offer.length < 20) return;
+
+  $('pipeline').style.display = 'block';
+  [1,2,3].forEach(n => { $(`card-${n}`).className = `agent-card a${n} collapsed`; setStatus(n, '', 'Waiting'); });
+  $('i-questions').innerHTML = '';
+  setProgress(0);
+
+  analyzeBtn.disabled = true;
+  analyzeBtn.innerHTML = '<span class="spin">⟳</span> Processing…';
+
+  $('pipeline').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  setProgress(10); setStatus(1, 'running', 'Running…'); openCard(1);
+
+  // Indeterminate pulse while waiting for the server
+  $('progress-bar').classList.add('indeterminate');
+
+  try {
+    const form = new FormData();
+    form.append('cv_file', file, file.name);
+    form.append('job_offer', offer);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 120000);
+    const res = await fetch(`${API}/api/v1/analyze`, { method: 'POST', body: form, signal: controller.signal });
+    clearTimeout(timeoutId);
+    $('progress-bar').classList.remove('indeterminate');
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(parseApiError(err, res.statusText || 'Error desconocido'));
+    }
+    const data = await res.json();
+
+      setProgress(33); setStatus(1, 'done', 'Completed'); renderProfiler(data.profiler); closeActive(1);
+
+    setProgress(66); setStatus(2, 'running', 'Running…'); openCard(2);
+    setStatus(2, 'done', 'Completed'); renderCritic(data.tech_critic); closeActive(2);
+
+    setProgress(95); setStatus(3, 'running', 'Running…'); openCard(3);
+    setStatus(3, 'done', 'Completed'); renderInterviewer(data.interviewer); closeActive(3);
+
+    setProgress(100);
+  } catch (err) {
+    $('progress-bar').classList.remove('indeterminate'); setProgress(0);
+    [1,2,3].forEach(n => {
+      const tag = $(`status-${n}`);
+      if (tag && tag.classList.contains('running')) setStatus(n, 'error', 'Error');
+    });
+    showError(err.name === 'AbortError' ? 'Request timed out (>2min). The model may be taking too long.' : err.message);
+  } finally {
+    analyzeBtn.disabled = false;
+    analyzeBtn.innerHTML = '<span class="btn-icon">⚡</span> Run Pipeline';
+    updateBtn();
+  }
+});
+
+// =====================================================================
+// OFERTAS / BATCH
+// =====================================================================
+let currentOfferId = null;
+let pollTimer = null;
+let selectedFiles = [];
+
+function showView(viewId) {
+  ['offers-list-view', 'create-offer-view', 'offer-detail-view'].forEach(id => {
+    $(id).classList.toggle('hidden', id !== viewId);
+  });
+}
+
+// ---- Offers list ----
+async function loadOffers() {
+  try {
+    const res = await fetch(`${API}/api/v1/batch/sessions`);
+    if (!res.ok) return;
+    const offers = await res.json();
+    const container = $('offers-container');
+    if (offers.length === 0) {
+      container.innerHTML = `<div class="empty-state"><span class="empty-icon">📋</span><p>No offers yet. Create the first one to get started.</p></div>`;
+      return;
+    }
+    container.innerHTML = offers.map(o => {
+      const done = o.cvs.filter(c => c.status === 'complete').length;
+      const total = o.total_cvs;
+      const labels = { open: '📂 Open', processing: '⚙️ Processing', closed: '🔒 Closed' };
+      return `<div class="offer-card" onclick="openOffer('${jsEsc(o.id)}')">
+        <div class="offer-card-info">
+          <h3>${esc(o.title)}</h3>
+          <p>${esc((o.job_offer || '').slice(0, 120))}${(o.job_offer || '').length > 120 ? '…' : ''}</p>
+        </div>
+        <div class="offer-card-meta">
+          <span class="status-badge ${esc(o.status)}">${labels[o.status] || esc(o.status)}</span>
+          <span style="font-size:12px;color:var(--text-tertiary);white-space:nowrap">${done}/${total} CVs</span>
+        </div>
+      </div>`;
+    }).join('');
+  } catch { /* ignore */ }
+}
+
+// ---- Create offer ----
+$('new-offer-btn').addEventListener('click', () => {
+  $('offer-title').value = '';
+  $('offer-desc').value = '';
+  $('save-offer-btn').disabled = true;
+  showView('create-offer-view');
+});
+
+$('back-from-create').addEventListener('click', () => showView('offers-list-view'));
+
+function updateSaveBtn() {
+  $('save-offer-btn').disabled = !(
+    $('offer-title').value.trim().length >= 1 &&
+    $('offer-desc').value.trim().length >= 20
+  );
+}
+$('offer-title').addEventListener('input', updateSaveBtn);
+$('offer-desc').addEventListener('input', updateSaveBtn);
+
+$('save-offer-btn').addEventListener('click', async () => {
+  const title = $('offer-title').value.trim();
+  const desc = $('offer-desc').value.trim();
+  if (!title || desc.length < 20) return;
+
+  $('save-offer-btn').disabled = true;
+  $('save-offer-btn').innerHTML = '<span class="spin">⟳</span> Creating…';
+
+  try {
+    const res = await fetch(`${API}/api/v1/batch/sessions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, job_offer: desc }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(parseApiError(err, 'Error creating offer'));
+    }
+    const session = await res.json();
+    showView('offers-list-view');
+    await loadOffers();
+    openOffer(session.id);
+  } catch (err) {
+    alert('Error: ' + err.message);
+  } finally {
+    $('save-offer-btn').disabled = false;
+    $('save-offer-btn').innerHTML = '+ Create Offer';
+  }
+});
+
+// ---- Open offer ----
+async function openOffer(offerId) {
+  currentOfferId = offerId;
+  showView('offer-detail-view');
+  await refreshDetail();
+  startPolling();
+}
+
+$('back-to-list').addEventListener('click', () => {
+  currentOfferId = null;
+  stopPolling();
+  showView('offers-list-view');
+  loadOffers();
+});
+
+$('refresh-detail-btn').addEventListener('click', refreshDetail);
+
+async function refreshDetail() {
+  if (!currentOfferId) return;
+  try {
+    const res = await fetch(`${API}/api/v1/batch/sessions/${currentOfferId}`);
+    if (res.status === 404) {
+      stopPolling();
+      showView('offers-list-view');
+      loadOffers();
+      alert('The offer no longer exists.');
+      return;
+    }
+    if (!res.ok) return;
+    const session = await res.json();
+    if (session.status !== 'procesando') stopPolling();
+    renderDetail(session);
+  } catch { /* ignore */ }
+}
+
+function renderDetail(session) {
+  $('detail-title').textContent = session.title;
+  $('detail-desc').textContent = session.job_offer || '';
+
+  const labels = { open: '📂 Open', processing: '⚙️ Processing', closed: '🔒 Closed' };
+  const badge = $('detail-status-badge');
+  badge.textContent = labels[session.status] || session.status;
+  badge.className = 'status-badge ' + session.status;
+
+  const total = session.total_cvs;
+  const done = session.cvs.filter(c => c.status === 'complete').length;
+  const errs = session.cvs.filter(c => c.status === 'error').length;
+  const pending = session.cvs.filter(c => c.status === 'pending' || c.status === 'processing').length;
+
+  const closeBtn = $('close-offer-btn');
+  const reopenBtn = $('reopen-offer-btn');
+  const uploadSection = $('upload-section');
+
+  if (session.status === 'open') {
+    const pendingMsg = pending > 0 ? ` (${pending} pending)` : '';
+    $('detail-status-text').textContent = `📂 Open — ${total} CV(s) uploaded${pendingMsg}`;
+    closeBtn.style.display = 'inline-flex';
+    reopenBtn.style.display = 'none';
+    uploadSection.style.display = 'block';
+    $('export-csv-btn').disabled = done === 0;
+  } else if (session.status === 'processing') {
+    $('detail-status-text').textContent = `⚙️ Processing… ${done + errs}/${total}`;
+    closeBtn.style.display = 'none';
+    reopenBtn.style.display = 'none';
+    uploadSection.style.display = 'none';
+    $('export-csv-btn').disabled = true;
+  } else if (session.status === 'closed') {
+    $('detail-status-text').textContent = `🔒 Closed — ${done} OK, ${errs} errors (${total} total)`;
+    closeBtn.style.display = 'none';
+    reopenBtn.style.display = 'inline-flex';
+    uploadSection.style.display = 'none';
+    $('export-csv-btn').disabled = done === 0;
+  }
+
+  const tbody = $('ranking-body');
+  const ranked = [...session.cvs]
+    .filter(c => c.status === 'complete' || c.status === 'error')
+    .sort((a, b) => (b.match_score || 0) - (a.match_score || 0));
+
+  if (ranked.length === 0 && total === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:32px;font-size:13px">Upload CVs to see the ranking here.</td></tr>`;
+    return;
+  }
+  if (ranked.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary);padding:32px;font-size:13px">⏳ Processing CVs…</td></tr>`;
+    return;
+  }
+
+  tbody.dataset.sessionId = session.id;
+
+  tbody.innerHTML = ranked.map((cv, i) => {
+    const score = cv.match_score ?? 0;
+    const scoreClass = score >= 70 ? 'high' : score >= 40 ? 'mid' : 'low';
+    const discarded = cv.descartado ? ' discarded' : '';
+    const fn = jsEsc(cv.filename);
+    const sid = jsEsc(session.id);
+    const hasDetail = cv.status === 'complete' && cv.profiler && cv.critic && cv.interviewer;
+    const mainRow = `<tr class="rank-row${discarded}" data-row-idx="${i}">
+      <td><button class="btn btn-ghost btn-sm expand-btn" data-idx="${i}" onclick="toggleExpand(${i})" ${hasDetail ? '' : 'disabled style="opacity:0;pointer-events:none"'}>▶</button></td>
+      <td><span class="rank-num">${i + 1}</span></td>
+      <td>${esc(cv.filename)}${cv.error ? `<br><span class="cv-error" title="${esc(cv.error)}">${esc(cv.error)}</span>` : ''}</td>
+      <td><span class="cv-status-tag ${cv.status}">${cv.status === 'complete' ? '✅' : '❌'}</span></td>
+      <td><span class="score-cell ${scoreClass}">${score}%</span></td>
+      <td>${cv.years_experience ?? '—'}</td>
+      <td>${esc(cv.location || '—')}</td>
+      <td>
+        <div class="flex gap-8">
+          <button class="btn btn-ghost btn-sm" onclick="contactCv('${sid}','${fn}')" ${cv.status !== 'complete' ? 'disabled' : ''}>📞</button>
+          <button class="btn btn-danger btn-sm" onclick="toggleDiscard('${sid}','${fn}')">${cv.descartado ? '✅' : '🗑'}</button>
+        </div>
+      </td>
+    </tr>`;
+    const detailRow = hasDetail
+      ? `<tr class="rank-detail hidden detail-row-${i}"><td colspan="8"><div class="agent-detail-content">${renderAgentDetailsHtml(cv)}</div></td></tr>`
+      : '';
+    return mainRow + detailRow;
+  }).join('');
+}
+
+// ---- Contact ----
+async function contactCv(offerId, filename) {
+  try {
+    const res = await fetch(`${API}/api/v1/batch/sessions/${offerId}/cv/${encodeURIComponent(filename)}/contact`);
+    if (!res.ok) throw new Error('No disponible');
+    const data = await res.json();
+    $('contact-phone').textContent = data.phone || '—';
+    $('contact-email').textContent = data.email || '—';
+    $('contact-location').textContent = data.location || '—';
+    $('contact-modal').classList.add('active');
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+
+$('close-modal-btn').addEventListener('click', () => $('contact-modal').classList.remove('active'));
+$('contact-modal').addEventListener('click', e => { if (e.target === e.currentTarget) $('contact-modal').classList.remove('active'); });
+
+// ---- Discard ----
+async function toggleDiscard(offerId, filename) {
+  try {
+    const res = await fetch(`${API}/api/v1/batch/sessions/${offerId}/cv/${encodeURIComponent(filename)}/discard`, { method: 'PATCH' });
+    if (res.status === 404) {
+      alert('The offer no longer exists.');
+      showView('offers-list-view');
+      loadOffers();
+      return;
+    }
+    if (!res.ok) throw new Error('Error changing status');
+    await refreshDetail();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+}
+
+// ---- Expand / collapse agent details ----
+function toggleExpand(idx) {
+  const detailRow = document.querySelector(`.detail-row-${idx}`);
+  if (!detailRow) return;
+  const btn = document.querySelector(`.expand-btn[data-idx="${idx}"]`);
+  detailRow.classList.toggle('hidden');
+  if (btn) {
+    const isOpen = !detailRow.classList.contains('hidden');
+    btn.textContent = isOpen ? '▼' : '▶';
+    btn.classList.toggle('expanded', isOpen);
+  }
+}
+
+function renderAgentDetailsHtml(cv) {
+  const p = cv.profiler, c = cv.critic, i = cv.interviewer;
+  if (!p || !c || !i) return '';
+
+  const years = (v) => v ?? '--';
+  const techs = (p.main_technologies || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')
+    || '<span style="color:var(--text-tertiary);font-size:12px">None detected</span>';
+  const projects = (p.anonymous_projects || []).map(t => `<li>${esc(t)}</li>`).join('')
+    || '<li style="color:var(--text-tertiary)">No projects listed</li>';
+  const certs = (p.certifications || []).map(t => `<li>${esc(t)}</li>`).join('')
+    || '<li style="color:var(--text-tertiary)">No certifications</li>';
+
+  const score = c.match_score ?? 0;
+  const circ = 2 * Math.PI * 42;
+  const offset = circ - (score / 100) * circ;
+  const scoreColor = score >= 70 ? 'var(--success)' : score >= 40 ? 'var(--warning)' : 'var(--danger)';
+
+  const strengths = (c.strengths || []).map(t => `<li>${esc(t)}</li>`).join('')
+    || '<li style="color:var(--text-tertiary)">None</li>';
+  const gaps = (c.tech_gaps || []).map(t => `<li>${esc(t)}</li>`).join('')
+    || '<li style="color:var(--text-tertiary)">No tech gaps detected</li>';
+
+  const questions = (i.questions || []).map((q, idx) => `
+    <div class="question-item fade-up" style="animation-delay:${idx * .1}s">
+      <div class="q-num">${idx + 1}</div>
+      <div class="q-text">${esc(q.question)}</div>
+      <div class="q-sub">Justification</div>
+      <div class="q-just">${esc(q.question_justification)}</div>
+      <div class="q-sub">Expected Answer</div>
+      <div class="q-answer">${esc(q.expected_correct_answer)}</div>
+    </div>`).join('');
+
+  return `
+    <div class="agent-card done-1">
+      <div class="agent-card-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <div class="agent-num">01</div>
+        <div class="agent-meta">
+          <div class="agent-name">The Profiler</div>
+          <div class="agent-model">Anonymous Extractor</div>
+        </div>
+          <div class="agent-status-tag done">Completed</div>
+        </div>
+      </div>
+      <div class="agent-body">
+        <div class="result-grid">
+          <div class="result-block">
+            <h4>Experience</h4>
+            <div class="years-value" style="font-size:28px;font-weight:700;color:var(--primary);line-height:1">${years(p.years_experience)}</div>
+            <div class="years-label" style="font-size:11px;color:var(--text-tertiary);margin-top:2px">estimated years</div>
+          </div>
+          <div class="result-block">
+            <h4>Technologies</h4>
+            <div class="tag-list">${techs}</div>
+          </div>
+          <div class="result-block">
+            <h4>Anonymous Projects</h4>
+            <ul class="result-list list-good">${projects}</ul>
+          </div>
+          <div class="result-block">
+            <h4>Certifications</h4>
+            <ul class="result-list list-good">${certs}</ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="agent-card done-2">
+      <div class="agent-card-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <div class="agent-num">02</div>
+        <div class="agent-meta">
+          <div class="agent-name">The Tech Critic</div>
+          <div class="agent-model">Technical Evaluator</div>
+        </div>
+        <div class="agent-status-tag done">Completado</div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="agent-body">
+        <div class="result-grid">
+          <div class="result-block score-wrap">
+            <h4>Match Score</h4>
+            <div class="score-ring">
+              <svg viewBox="0 0 100 100">
+                <circle class="track" cx="50" cy="50" r="42"/>
+                <circle class="fill" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="${offset}" style="stroke:${scoreColor}"/>
+              </svg>
+              <div class="score-number" style="color:${scoreColor}">${score}%</div>
+            </div>
+          </div>
+          <div class="result-block">
+            <h4>Strengths ✓</h4>
+            <ul class="result-list list-good">${strengths}</ul>
+          </div>
+          <div class="result-block">
+            <h4>Tech Gaps ✗</h4>
+            <ul class="result-list list-bad">${gaps}</ul>
+          </div>
+          <div class="result-block">
+            <h4>Analysis Conclusion</h4>
+            <p class="conclusion-text">${esc(c.analysis_conclusion || '')}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="agent-card done-3">
+      <div class="agent-card-header" onclick="this.parentElement.classList.toggle('collapsed')">
+        <div class="agent-num">03</div>
+        <div class="agent-meta">
+          <div class="agent-name">The Interviewer</div>
+          <div class="agent-model">Technical Interviewer</div>
+        </div>
+        <div class="agent-status-tag done">Completed</div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="agent-body">
+        <div style="display:grid;gap:16px">${questions}</div>
+      </div>
+    </div>`;
+}
+
+// ---- Upload ----
+const batchDrop = $('batch-drop');
+const batchFilesInput = $('batch-files');
+const uploadCvsBtn = $('upload-cvs-btn');
+
+batchDrop.addEventListener('click', () => batchFilesInput.click());
+batchDrop.addEventListener('dragover', e => { e.preventDefault(); batchDrop.classList.add('drag-over'); });
+batchDrop.addEventListener('dragleave', () => batchDrop.classList.remove('drag-over'));
+batchDrop.addEventListener('drop', e => {
+  e.preventDefault(); batchDrop.classList.remove('drag-over');
+  addFiles(Array.from(e.dataTransfer.files));
+});
+batchFilesInput.addEventListener('change', () => {
+  addFiles(Array.from(batchFilesInput.files));
+  batchFilesInput.value = '';
+});
+
+function addFiles(files) {
+  const pdfs = files.filter(isPdfFile);
+  if (pdfs.length !== files.length) alert('Some files are not PDF and will be ignored.');
+  const existing = new Set(selectedFiles.map(f => f.name));
+  const newPdfs = pdfs.filter(f => !existing.has(f.name));
+  if (newPdfs.length < pdfs.length) alert(`${pdfs.length - newPdfs.length} duplicate file(s) ignored.`);
+  selectedFiles = selectedFiles.concat(newPdfs);
+  renderFileList();
+  uploadCvsBtn.disabled = selectedFiles.length === 0;
+  $('batch-cv-count').textContent = `${selectedFiles.length} CV(s) selected`;
+}
+
+function renderFileList() {
+  $('batch-file-list').innerHTML = selectedFiles.map((f, i) =>
+    `<span class="batch-file-tag">📄 ${esc(f.name)} <span style="cursor:pointer;color:var(--danger)" onclick="removeFile(${i})">✕</span></span>`
+  ).join('');
+}
+
+function removeFile(idx) {
+  selectedFiles.splice(idx, 1);
+  renderFileList();
+  uploadCvsBtn.disabled = selectedFiles.length === 0;
+  $('batch-cv-count').textContent = `${selectedFiles.length} CV(s) selected`;
+}
+
+uploadCvsBtn.addEventListener('click', async () => {
+  if (!currentOfferId || selectedFiles.length === 0) return;
+  uploadCvsBtn.disabled = true;
+  uploadCvsBtn.innerHTML = '<span class="spin">⟳</span> Uploading…';
+  try {
+    const form = new FormData();
+    selectedFiles.forEach(f => form.append('files', f, f.name));
+    const res = await fetch(`${API}/api/v1/batch/sessions/${currentOfferId}/cv`, {
+      method: 'POST', body: form,
+    });
+    if (res.status === 404) {
+      showView('offers-list-view');
+      loadOffers();
+      throw new Error('The offer no longer exists.');
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(parseApiError(err, 'Error uploading CVs'));
+    }
+    selectedFiles = [];
+    renderFileList();
+    $('batch-cv-count').textContent = '0 CV(s) selected';
+    await refreshDetail();
+    startPolling();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  } finally {
+    uploadCvsBtn.disabled = selectedFiles.length === 0;
+    uploadCvsBtn.innerHTML = '⬆ Upload CVs';
+  }
+});
+
+$('reopen-offer-btn').addEventListener('click', async () => {
+  if (!currentOfferId) return;
+  const btn = $('reopen-offer-btn');
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${API}/api/v1/batch/sessions/${currentOfferId}/reopen`, { method: 'POST' });
+    if (res.status === 404) {
+      showView('offers-list-view');
+      loadOffers();
+      throw new Error('The offer no longer exists.');
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(parseApiError(err, 'Error reopening offer'));
+    }
+    await refreshDetail();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('close-offer-btn').addEventListener('click', async () => {
+  if (!currentOfferId) return;
+  if (!confirm('Close the offer? No more CVs can be uploaded.')) return;
+  const btn = $('close-offer-btn');
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${API}/api/v1/batch/sessions/${currentOfferId}/close`, { method: 'POST' });
+    if (res.status === 404) {
+      showView('offers-list-view');
+      loadOffers();
+      throw new Error('The offer no longer exists.');
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(parseApiError(err, 'Error closing offer'));
+    }
+    await refreshDetail();
+  } catch (err) {
+    alert('Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ---- Polling ----
+function startPolling() {
+  stopPolling();
+  pollTimer = setInterval(refreshDetail, 3000);
+}
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+// ---- Export CSV ----
+$('export-csv-btn').addEventListener('click', async () => {
+  if (!currentOfferId) return;
+  try {
+    const res = await fetch(`${API}/api/v1/batch/sessions/${currentOfferId}/export`);
+    if (!res.ok) throw new Error('Error al exportar');
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const titleEl = $('detail-title');
+    const safeTitle = (titleEl?.textContent || currentOfferId).replace(/[^a-z0-9_\-]/gi, '_').slice(0, 40);
+    a.download = `${safeTitle}-results.csv`;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('Error exporting CSV: ' + err.message);
+  }
+});
+
+// ---- Init ----
+loadOffers();
+</script>
+</body>
+</html>
