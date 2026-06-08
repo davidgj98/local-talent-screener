@@ -23,7 +23,9 @@ MAX_CONCURRENT = 1
 
 
 class CvJob:
-    def __init__(self, filename: str, cv_bytes: bytes | None = None, cv_path: str | None = None):
+    def __init__(
+        self, filename: str, cv_bytes: bytes | None = None, cv_path: str | None = None
+    ):
         self.filename = filename
         self.cv_bytes = cv_bytes
         self.cv_path = cv_path
@@ -48,7 +50,9 @@ class BatchSession:
         self._worker_task: asyncio.Task | None = None
         self._on_change = on_change
 
-    def add_cv(self, filename: str, cv_bytes: bytes, cv_path: str | None = None) -> CvJob:
+    def add_cv(
+        self, filename: str, cv_bytes: bytes, cv_path: str | None = None
+    ) -> CvJob:
         existing = next((j for j in self.jobs if j.filename == filename), None)
         if existing:
             if existing.status == "processing":
@@ -104,7 +108,9 @@ class BatchSession:
         try:
             if job.cv_bytes is None and job.cv_path:
                 if not os.path.exists(job.cv_path):
-                    raise FileNotFoundError(f"CV file no longer exists on disk. Please re-upload '{job.filename}'.")
+                    raise FileNotFoundError(
+                        f"CV file no longer exists on disk. Please re-upload '{job.filename}'."
+                    )
                 with open(job.cv_path, "rb") as f:
                     job.cv_bytes = f.read()
             cv_text = extract_text_from_pdf(job.cv_bytes)
@@ -140,17 +146,21 @@ class BatchSession:
     def to_dict(self) -> dict:
         jobs_data = []
         for j in self.jobs:
-            jobs_data.append({
-                "filename": j.filename,
-                "status": j.status,
-                "error": j.error,
-                "match_score": j.match_score,
-                "discarded": j.discarded,
-                "cv_path": j.cv_path,
-                "profiler": j.profiler.model_dump() if j.profiler else None,
-                "critic": j.critic.model_dump() if j.critic else None,
-                "interviewer": j.interviewer.model_dump() if j.interviewer else None,
-            })
+            jobs_data.append(
+                {
+                    "filename": j.filename,
+                    "status": j.status,
+                    "error": j.error,
+                    "match_score": j.match_score,
+                    "discarded": j.discarded,
+                    "cv_path": j.cv_path,
+                    "profiler": j.profiler.model_dump() if j.profiler else None,
+                    "critic": j.critic.model_dump() if j.critic else None,
+                    "interviewer": j.interviewer.model_dump()
+                    if j.interviewer
+                    else None,
+                }
+            )
         return {
             "id": self.id,
             "title": self.title,
@@ -205,38 +215,63 @@ class BatchSession:
     def to_csv(self) -> str:
         buf = io.StringIO()
         w = csv.writer(buf)
-        w.writerow([
-            "Rank", "Filename", "Status", "Discarded",
-            "Match Score", "Location",
-            "Years Exp.", "Technologies",
-            "Strengths", "Tech Gaps",
-            "Conclusion", "# Questions", "Error",
-        ])
+        w.writerow(
+            [
+                "Rank",
+                "Filename",
+                "Status",
+                "Discarded",
+                "Match Score",
+                "Location",
+                "Years Exp.",
+                "Technologies",
+                "Strengths",
+                "Tech Gaps",
+                "Conclusion",
+                "# Questions",
+                "Error",
+            ]
+        )
         all_jobs = sorted(self.jobs, key=lambda j: j.match_score or 0, reverse=True)
         for rank, job in enumerate(all_jobs, 1):
             if job.status == "error":
                 continue
-            w.writerow([
-                rank,
-                job.filename,
-                job.status,
-                "Yes" if job.discarded else "No",
-                job.match_score or "",
-                job.profiler.location if job.profiler else "",
-                job.profiler.years_experience if job.profiler else "",
-                "; ".join(job.profiler.main_technologies) if job.profiler else "",
-                "; ".join(job.critic.strengths) if job.critic else "",
-                "; ".join(job.critic.tech_gaps) if job.critic else "",
-                job.critic.analysis_conclusion if job.critic else "",
-                len(job.interviewer.questions) if job.interviewer else 0,
-                job.error or "",
-            ])
+            w.writerow(
+                [
+                    rank,
+                    job.filename,
+                    job.status,
+                    "Yes" if job.discarded else "No",
+                    job.match_score or "",
+                    job.profiler.location if job.profiler else "",
+                    job.profiler.years_experience if job.profiler else "",
+                    "; ".join(job.profiler.main_technologies) if job.profiler else "",
+                    "; ".join(job.critic.strengths) if job.critic else "",
+                    "; ".join(job.critic.tech_gaps) if job.critic else "",
+                    job.critic.analysis_conclusion if job.critic else "",
+                    len(job.interviewer.questions) if job.interviewer else 0,
+                    job.error or "",
+                ]
+            )
         for job in self.jobs:
             if job.status == "error":
-                w.writerow([
-                    "-", job.filename, job.status, "",
-                    "", "", "", "", "", "", "", "", job.error or "",
-                ])
+                w.writerow(
+                    [
+                        "-",
+                        job.filename,
+                        job.status,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        job.error or "",
+                    ]
+                )
         return buf.getvalue()
 
 

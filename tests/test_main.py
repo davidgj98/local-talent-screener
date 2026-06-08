@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import json
 import shutil
-from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -20,6 +18,7 @@ SAMPLE_PDF = b"%PDF-1.4 fake content for testing ................"
 @pytest.fixture(autouse=True)
 def clear_state():
     from main import _session_cache
+
     _session_cache.clear()
     offers_dir = DATA_DIR / "offers"
     if offers_dir.exists():
@@ -63,14 +62,20 @@ class TestAnalyze:
         sample_interviewer_data,
     ):
         mock_extract.return_value = "Extracted CV text"
-        mock_profiler.run = AsyncMock(return_value=ProfilerOutput(**sample_profiler_data))
+        mock_profiler.run = AsyncMock(
+            return_value=ProfilerOutput(**sample_profiler_data)
+        )
         mock_critic.run = AsyncMock(return_value=CriticOutput(**sample_critic_data))
-        mock_interviewer.run = AsyncMock(return_value=InterviewerOutput(**sample_interviewer_data))
+        mock_interviewer.run = AsyncMock(
+            return_value=InterviewerOutput(**sample_interviewer_data)
+        )
 
         r = client.post(
             "/api/v1/analyze",
             files={"cv_file": ("cv.pdf", SAMPLE_PDF, "application/pdf")},
-            data={"job_offer": "We need a Python developer with more than twenty chars"},
+            data={
+                "job_offer": "We need a Python developer with more than twenty chars"
+            },
         )
         assert r.status_code == 200, r.text
         data = r.json()
@@ -125,8 +130,12 @@ class TestBatchSessions:
         self._last_sid = data["id"]
 
     def test_list_sessions(self):
-        client.post("/api/v1/batch/sessions", json={"title": "A", "job_offer": "B" * 30})
-        client.post("/api/v1/batch/sessions", json={"title": "B", "job_offer": "C" * 30})
+        client.post(
+            "/api/v1/batch/sessions", json={"title": "A", "job_offer": "B" * 30}
+        )
+        client.post(
+            "/api/v1/batch/sessions", json={"title": "B", "job_offer": "C" * 30}
+        )
         r = client.get("/api/v1/batch/sessions")
         assert r.status_code == 200
         data = r.json()

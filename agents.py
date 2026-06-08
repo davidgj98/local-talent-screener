@@ -84,8 +84,9 @@ class BaseAgent:
                 raw=raw[:500],
             ) from exc
 
-    async def _call_with_retry(self, user_content: str, validator=None, max_retries: int = 1):
-        last_error = None
+    async def _call_with_retry(
+        self, user_content: str, validator=None, max_retries: int = 1
+    ):
         for attempt in range(max_retries + 1):
             raw = None
             try:
@@ -95,13 +96,20 @@ class BaseAgent:
                     return validator(data, raw)
                 return raw
             except (AgentExecutionError, Exception) as e:
-                last_error = e
                 if attempt < max_retries:
-                    logger.warning("[%s] Error on attempt %d/%d: %s", self.name, attempt + 1, max_retries, e)
+                    logger.warning(
+                        "[%s] Error on attempt %d/%d: %s",
+                        self.name,
+                        attempt + 1,
+                        max_retries,
+                        e,
+                    )
                     continue
                 if isinstance(e, AgentExecutionError):
                     raise
-                raise AgentExecutionError(self.name, f"Invalid schema: {e}", raw=raw[:500] if raw else None) from e
+                raise AgentExecutionError(
+                    self.name, f"Invalid schema: {e}", raw=raw[:500] if raw else None
+                ) from e
 
 
 class TheProfiler(BaseAgent):
@@ -139,11 +147,16 @@ OUTPUT FORMAT — return ONLY this JSON (no extra text):
 
     async def run(self, cv_text: str) -> ProfilerOutput:
         user_content = json.dumps(
-            {"instruction": "Analyze the following CV and extract the anonymous technical profile.", "cv_text": cv_text},
+            {
+                "instruction": "Analyze the following CV and extract the anonymous technical profile.",
+                "cv_text": cv_text,
+            },
             ensure_ascii=False,
         )
+
         def validate(data, raw):
             return ProfilerOutput.model_validate(data)
+
         result = await self._call_with_retry(user_content, validator=validate)
         logger.debug("[TheProfiler] OK: %d technologies", len(result.main_technologies))
         return result
@@ -183,10 +196,16 @@ OUTPUT FORMAT — return ONLY this JSON (no extra text):
             },
             ensure_ascii=False,
         )
+
         def validate(data, raw):
             return CriticOutput.model_validate(data)
+
         result = await self._call_with_retry(user_content, validator=validate)
-        logger.debug("[TheTechCritic] OK: score=%d, gaps=%d", result.match_score, len(result.tech_gaps))
+        logger.debug(
+            "[TheTechCritic] OK: score=%d, gaps=%d",
+            result.match_score,
+            len(result.tech_gaps),
+        )
         return result
 
 
@@ -234,10 +253,12 @@ OUTPUT FORMAT — return ONLY a JSON with this structure (no extra text):
             },
             ensure_ascii=False,
         )
+
         def validate(data, raw):
             if isinstance(data, list):
                 data = {"questions": data}
             return InterviewerOutput.model_validate(data)
+
         result = await self._call_with_retry(user_content, validator=validate)
         logger.debug("[TheInterviewer] OK: %d questions", len(result.questions))
         return result

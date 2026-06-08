@@ -149,7 +149,9 @@ class TestInterviewerOutput:
 
 
 class TestAnalysisResponse:
-    def test_valid(self, sample_profiler_data, sample_critic_data, sample_interviewer_data):
+    def test_valid(
+        self, sample_profiler_data, sample_critic_data, sample_interviewer_data
+    ):
         r = AnalysisResponse(
             profiler=ProfilerOutput(**sample_profiler_data),
             tech_critic=CriticOutput(**sample_critic_data),
@@ -162,12 +164,16 @@ class TestAnalysisResponse:
 
 class TestBatchModels:
     def test_batch_session_create_valid(self):
-        b = BatchSessionCreate(title="Test", job_offer="Test description with more than twenty chars")
+        b = BatchSessionCreate(
+            title="Test", job_offer="Test description with more than twenty chars"
+        )
         assert b.title == "Test"
 
     def test_batch_session_create_short_title_raises(self):
         with pytest.raises(ValidationError):
-            BatchSessionCreate(title="", job_offer="Test description with more than twenty chars")
+            BatchSessionCreate(
+                title="", job_offer="Test description with more than twenty chars"
+            )
 
     def test_batch_session_create_short_offer_raises(self):
         with pytest.raises(ValidationError):

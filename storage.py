@@ -29,7 +29,9 @@ def load_offer(offer_id: str) -> dict | None:
 def list_offers() -> list[dict]:
     _ensure_dirs()
     offers = []
-    for path in sorted(OFFERS_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True):
+    for path in sorted(
+        OFFERS_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True
+    ):
         with open(path, "r", encoding="utf-8") as f:
             offers.append(json.load(f))
     return offers

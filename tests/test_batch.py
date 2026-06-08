@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from unittest.mock import AsyncMock, patch
+
 
 import pytest
 
@@ -24,7 +24,9 @@ class TestCvJob:
 
 class TestBatchSession:
     def test_create(self):
-        session = BatchSession("Test Offer", "Job description with more than twenty characters")
+        session = BatchSession(
+            "Test Offer", "Job description with more than twenty characters"
+        )
         assert session.title == "Test Offer"
         assert session.status == "open"
         assert len(session.id) == 12
@@ -81,7 +83,13 @@ class TestBatchSession:
             "job_offer": "A" * 30,
             "created_at": time.time(),
             "status": "open",
-            "cvs": [{"filename": "cv.pdf", "status": "processing", "cv_path": "/tmp/test.pdf"}],
+            "cvs": [
+                {
+                    "filename": "cv.pdf",
+                    "status": "processing",
+                    "cv_path": "/tmp/test.pdf",
+                }
+            ],
         }
         restored = BatchSession.from_dict(data)
         assert restored.jobs[0].status == "pending"

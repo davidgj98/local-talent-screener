@@ -34,7 +34,9 @@ class ProfilerOutput(BaseModel):
         description="Candidate geographic location (city, region, etc).",
     )
 
-    @field_validator("main_technologies", "anonymous_projects", "certifications", mode="before")
+    @field_validator(
+        "main_technologies", "anonymous_projects", "certifications", mode="before"
+    )
     @classmethod
     def ensure_list_of_strings(cls, v: object) -> list[str]:
         if v is None:
@@ -92,9 +94,11 @@ class InterviewQuestion(BaseModel):
 
 
 class InterviewerOutput(BaseModel):
-    questions: Annotated[list[InterviewQuestion], Field(min_length=1, max_length=3)] = Field(
-        ...,
-        description="List of technical questions (exactly 3).",
+    questions: Annotated[list[InterviewQuestion], Field(min_length=1, max_length=3)] = (
+        Field(
+            ...,
+            description="List of technical questions (exactly 3).",
+        )
     )
 
     @field_validator("questions", mode="before")
@@ -123,7 +127,9 @@ class AgentError(BaseModel):
 
 class BatchSessionCreate(BaseModel):
     title: str = Field(..., min_length=1, description="Session title.")
-    job_offer: str = Field(..., min_length=20, description="Full job offer description.")
+    job_offer: str = Field(
+        ..., min_length=20, description="Full job offer description."
+    )
 
 
 class BatchCvResult(BaseModel):

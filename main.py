@@ -54,16 +54,23 @@ async def _read_and_store_cv(cv_file: UploadFile) -> tuple[bytes, Path | None]:
     if not raw_bytes:
         raise HTTPException(status_code=400, detail="PDF file is empty")
     if len(raw_bytes) > MAX_CV_BYTES:
-        raise HTTPException(status_code=400, detail=f"PDF exceeds limit of {MAX_CV_BYTES // (1024 * 1024)} MB")
+        raise HTTPException(
+            status_code=400,
+            detail=f"PDF exceeds limit of {MAX_CV_BYTES // (1024 * 1024)} MB",
+        )
     if not _is_pdf_bytes(raw_bytes):
-        raise HTTPException(status_code=400, detail="Content does not appear to be a valid PDF")
+        raise HTTPException(
+            status_code=400, detail="Content does not appear to be a valid PDF"
+        )
 
     temp_path: Path | None = None
     try:
         suffix = Path(cv_file.filename or "cv.pdf").suffix or ".pdf"
         temp_path = UPLOAD_DIR / f"{uuid.uuid4().hex}{suffix}"
         temp_path.write_bytes(raw_bytes)
-        logger.debug("CV temporarily saved to %s (%d bytes)", temp_path.name, len(raw_bytes))
+        logger.debug(
+            "CV temporarily saved to %s (%d bytes)", temp_path.name, len(raw_bytes)
+        )
     except OSError as exc:
         logger.warning("Could not save temporary CV copy: %s", exc)
         temp_path = None
@@ -215,7 +222,10 @@ async def analyze_cv(
         raise HTTPException(status_code=400, detail="File must be a PDF (.pdf)")
 
     if not job_offer or len(job_offer.strip()) < 20:
-        raise HTTPException(status_code=400, detail="Job offer description is too short (min. 20 characters)")
+        raise HTTPException(
+            status_code=400,
+            detail="Job offer description is too short (min. 20 characters)",
+        )
 
     temp_path: Path | None = None
     try:
@@ -233,7 +243,10 @@ async def analyze_cv(
                 logger.warning("Could not delete temp file %s: %s", temp_path, exc)
 
     if not cv_text.strip():
-        raise HTTPException(status_code=400, detail="Could not extract text from PDF. Is it a scanned PDF without OCR?")
+        raise HTTPException(
+            status_code=400,
+            detail="Could not extract text from PDF. Is it a scanned PDF without OCR?",
+        )
 
     logger.info(
         "PDF received: %s | %d bytes | %d chars extracted",
@@ -245,26 +258,42 @@ async def analyze_cv(
     try:
         logger.info("Running TheProfiler (%s)...", profiler_agent.model)
         profiler_result = await profiler_agent.run(cv_text)
-        logger.info("TheProfiler completed. Technologies detected: %d", len(profiler_result.main_technologies))
+        logger.info(
+            "TheProfiler completed. Technologies detected: %d",
+            len(profiler_result.main_technologies),
+        )
     except AgentExecutionError as exc:
         logger.error("TheProfiler failed: %s", exc)
-        raise HTTPException(status_code=500, detail=exc.to_schema().model_dump()) from exc
+        raise HTTPException(
+            status_code=500, detail=exc.to_schema().model_dump()
+        ) from exc
 
     try:
         logger.info("Running TheTechCritic (%s)...", critic_agent.model)
         critic_result = await critic_agent.run(profiler_result, job_offer)
-        logger.info("TheTechCritic completed. match_score=%d, tech_gaps=%d", critic_result.match_score, len(critic_result.tech_gaps))
+        logger.info(
+            "TheTechCritic completed. match_score=%d, tech_gaps=%d",
+            critic_result.match_score,
+            len(critic_result.tech_gaps),
+        )
     except AgentExecutionError as exc:
         logger.error("TheTechCritic failed: %s", exc)
-        raise HTTPException(status_code=500, detail=exc.to_schema().model_dump()) from exc
+        raise HTTPException(
+            status_code=500, detail=exc.to_schema().model_dump()
+        ) from exc
 
     try:
         logger.info("Running TheInterviewer (%s)...", interviewer_agent.model)
         interviewer_result = await interviewer_agent.run(critic_result, job_offer)
-        logger.info("TheInterviewer completed. Questions generated: %d", len(interviewer_result.questions))
+        logger.info(
+            "TheInterviewer completed. Questions generated: %d",
+            len(interviewer_result.questions),
+        )
     except AgentExecutionError as exc:
         logger.error("TheInterviewer failed: %s", exc)
-        raise HTTPException(status_code=500, detail=exc.to_schema().model_dump()) from exc
+        raise HTTPException(
+            status_code=500, detail=exc.to_schema().model_dump()
+        ) from exc
 
     elapsed = time.monotonic() - start
     logger.info("Pipeline completed in %.1fs", elapsed)
@@ -278,7 +307,9 @@ async def analyze_cv(
 
 @app.post("/api/v1/batch/sessions", tags=["Offers"], summary="Create new offer")
 async def create_session(body: BatchSessionCreate) -> BatchSessionInfo:
-    session = BatchSession(title=body.title, job_offer=body.job_offer, on_change=_persist_session)
+    session = BatchSession(
+        title=body.title, job_offer=body.job_offer, on_change=_persist_session
+    )
     _persist_session(session)
     logger.info("[%s] Offer created: %s", session.id, session.title)
     return _session_to_info(session)
@@ -313,7 +344,9 @@ async def upload_cvs(
             continue
         raw_bytes = await f.read()
         if not raw_bytes or len(raw_bytes) > MAX_CV_BYTES:
-            logger.warning("[%s] Skipped (empty or too large): %s", session_id, f.filename)
+            logger.warning(
+                "[%s] Skipped (empty or too large): %s", session_id, f.filename
+            )
             continue
         if not _is_pdf_bytes(raw_bytes):
             logger.warning("[%s] Skipped (not PDF bytes): %s", session_id, f.filename)
@@ -385,14 +418,18 @@ async def reopen_session(session_id: str) -> BatchSessionInfo:
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     if session.status != "closed":
-        raise HTTPException(status_code=400, detail="Only a closed offer can be reopened")
+        raise HTTPException(
+            status_code=400, detail="Only a closed offer can be reopened"
+        )
 
     session.status = "open"
     _persist_session(session)
     return _session_to_info(session)
 
 
-@app.get("/api/v1/batch/sessions/{session_id}", tags=["Offers"], summary="Get offer status")
+@app.get(
+    "/api/v1/batch/sessions/{session_id}", tags=["Offers"], summary="Get offer status"
+)
 async def get_session(session_id: str) -> BatchSessionInfo:
     session = _load_session(session_id)
     if not session:

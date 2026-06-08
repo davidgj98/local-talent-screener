@@ -67,7 +67,9 @@ class TestTheProfiler:
 class TestTheTechCritic:
     @pytest.mark.asyncio
     @patch("agents.ollama.AsyncClient")
-    async def test_run_valid_response(self, mock_ollama_cls, sample_profiler_data, sample_critic_data):
+    async def test_run_valid_response(
+        self, mock_ollama_cls, sample_profiler_data, sample_critic_data
+    ):
         mock_client = fake_ollama_response(json.dumps(sample_critic_data))
         mock_ollama_cls.return_value = mock_client
 
@@ -97,7 +99,9 @@ class TestTheTechCritic:
 class TestTheInterviewer:
     @pytest.mark.asyncio
     @patch("agents.ollama.AsyncClient")
-    async def test_run_valid_response(self, mock_ollama_cls, sample_critic_data, sample_interviewer_data):
+    async def test_run_valid_response(
+        self, mock_ollama_cls, sample_critic_data, sample_interviewer_data
+    ):
         mock_client = fake_ollama_response(json.dumps(sample_interviewer_data))
         mock_ollama_cls.return_value = mock_client
 
