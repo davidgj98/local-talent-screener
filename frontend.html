@@ -1163,7 +1163,6 @@ const batchDrop = $('batch-drop');
 const batchFilesInput = $('batch-files');
 const uploadCvsBtn = $('upload-cvs-btn');
 
-batchDrop.addEventListener('click', () => batchFilesInput.click());
 batchDrop.addEventListener('dragover', e => { e.preventDefault(); batchDrop.classList.add('drag-over'); });
 batchDrop.addEventListener('dragleave', () => batchDrop.classList.remove('drag-over'));
 batchDrop.addEventListener('drop', e => {
